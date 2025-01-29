@@ -26,7 +26,18 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
+    const campaignCollection = client.db('crowdDB').collection('campaignCollection');
+
+    app.get('/campaigns', async(req, res) => {
+        const allCampaigns = await campaignCollection.find().toArray();
+        res.send(allCampaigns);
+    })
+
+    app.post('/campaigns', async(req, res) => {
+      const newCampaign = req.body;
+      const result = await campaignCollection.insertOne(newCampaign);
+      res.send(result)
+    })
     await client.connect();
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
