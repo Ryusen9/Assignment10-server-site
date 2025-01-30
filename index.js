@@ -33,6 +33,11 @@ async function run() {
         res.send(allCampaigns);
     })
 
+    app.get('/trendingCampaigns', async(req, res) => {
+      const trendingCampaigns = await campaignCollection.find().limit(6).toArray();
+      res.send(trendingCampaigns);
+    })
+
     app.post('/campaigns', async(req, res) => {
       const newCampaign = req.body;
       const result = await campaignCollection.insertOne(newCampaign);
