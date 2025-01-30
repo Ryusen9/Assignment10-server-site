@@ -12,7 +12,7 @@ app.use(cors());
 const user = process.env.DB_USER;
 const password = process.env.DB_PASSWORD;
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${user}:${password}@clusterryusen.ptw8o.mongodb.net/?retryWrites=true&w=majority&appName=ClusterRyusen`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -36,6 +36,13 @@ async function run() {
     app.get('/trendingCampaigns', async(req, res) => {
       const trendingCampaigns = await campaignCollection.find().limit(6).toArray();
       res.send(trendingCampaigns);
+    })
+
+    app.get('/campaignDetails/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const campaign = await campaignCollection.findOne(query);
+      res.send(campaign);
     })
 
     app.post('/campaigns', async(req, res) => {
