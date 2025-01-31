@@ -27,6 +27,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const campaignCollection = client.db('crowdDB').collection('campaignCollection');
+    const userCollection = client.db('crowdDB').collection('useerCollection');
 
     app.get('/campaigns', async(req, res) => {
         const allCampaigns = await campaignCollection.find().toArray();
@@ -50,6 +51,27 @@ async function run() {
       const result = await campaignCollection.insertOne(newCampaign);
       res.send(result)
     })
+
+    // User Segment
+
+    app.get('/users', async(req, res) => {
+       const allUsers = await userCollection.find().toArray();
+       res.send(allUsers);
+    })
+
+    app.get('/users/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const user = await userCollection.findOne(query);
+      res.send(user);
+    })
+
+    app.post('/users', async(req, res) => {
+      const newUser = req.body;
+      const result = await userCollection.insertOne(newUser);
+      res.send(result)
+    })
+
     await client.connect();
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
