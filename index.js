@@ -75,6 +75,13 @@ async function run() {
       res.send(result);
     });
 
+    app.delete("/deleteCampaign/:id", async(req, res) => {
+      const id = req.params.id;
+      const query = { UID : id };
+      const result = await campaignCollection.deleteOne(query);
+      res.send(result);
+    })
+
     // User Segment
 
     app.get("/users", async (req, res) => {
@@ -88,6 +95,16 @@ async function run() {
       const user = await userCollection.findOne(query);
       res.send(user);
     });
+
+    app.put("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const {donationAmount} = req.body;
+      const result = await userCollection.updateOne(
+        { UID: id },
+        { $set: { donationAmount: donationAmount } }
+      )
+      res.send(result)
+    })
 
     app.post("/users", async (req, res) => {
       const newUser = req.body;
