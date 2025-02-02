@@ -6,7 +6,18 @@ const port = process.env.PORT || 3000;
 
 //middleware
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://localhost:5175",
+      "https://crowdcube-291a5.web.app",
+      "https://crowdcube-291a5.firebaseapp.com/",
+    ],
+    credentials: true,
+  })
+);
 
 //mongodb
 const user = process.env.DB_USER;
@@ -75,12 +86,12 @@ async function run() {
       res.send(result);
     });
 
-    app.delete("/deleteCampaign/:id", async(req, res) => {
+    app.delete("/deleteCampaign/:id", async (req, res) => {
       const id = req.params.id;
-      const query = { UID : id };
+      const query = { UID: id };
       const result = await campaignCollection.deleteOne(query);
       res.send(result);
-    })
+    });
 
     // User Segment
 
@@ -98,13 +109,13 @@ async function run() {
 
     app.put("/users/:id", async (req, res) => {
       const id = req.params.id;
-      const {donationAmount} = req.body;
+      const { donationAmount } = req.body;
       const result = await userCollection.updateOne(
         { UID: id },
         { $set: { donationAmount: donationAmount } }
-      )
-      res.send(result)
-    })
+      );
+      res.send(result);
+    });
 
     app.post("/users", async (req, res) => {
       const newUser = req.body;
